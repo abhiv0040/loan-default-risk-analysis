@@ -16,9 +16,10 @@ The objective is to derive practical takeaways on **which borrower attributes ar
 | File Name                 | Description                                                   |
 |--------------------------|---------------------------------------------------------------|
 | `loan_default_risk_analysis.sql` | Full SQL script with data cleaning, transformations, and 16 analytical queries |
-| `loans_data.csv`         | Dataset used for analysis                             |
 | `README.md`              | Project overview and documentation (this file)                |
 
+> 📌 **Data Source**:  
+> This project uses publicly available data from **[Kaggle – Lending Club Loan Data (2007–2018)](https://www.kaggle.com/datasets/wordsforthewise/lending-club)**
 
 ---
 
