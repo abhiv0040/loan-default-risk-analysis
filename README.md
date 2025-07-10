@@ -15,10 +15,10 @@ The objective is to derive practical takeaways on **which borrower attributes ar
 
 | File Name                 | Description                                                   |
 |--------------------------|---------------------------------------------------------------|
-| `loan_risk_analysis.sql` | Full SQL script with data cleaning, transformations, and 16 analytical queries |
+| `loan_default_risk_analysis.sql` | Full SQL script with data cleaning, transformations, and 16 analytical queries |
 | `loans_data.csv`         | Cleaned dataset used for analysis                             |
 | `README.md`              | Project overview and documentation (this file)                |
-| `Loan_Risk_Report.pdf`   | (Optional) Visual report with charts and key insights         |
+
 
 ---
 
