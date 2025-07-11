@@ -27,13 +27,11 @@ WHERE loan_amnt IS NOT NULL
   AND id IS NOT NULL
   AND dti IS NOT NULL
   AND application_type IS NOT NULL;
-  
-  
+
 -- STEP 2: CLEAN TERM COLUMN (convert '36 months' -> 36)
 ALTER TABLE loans_clean ADD COLUMN term_clean INTEGER;
 UPDATE loans_clean
 SET term_clean = CAST(REPLACE(term, ' months', '') AS INTEGER);
-
 
 -- STEP 3: FLAG ZERO INCOME RECORDS
 ALTER TABLE loans_clean ADD COLUMN income_flag TEXT;
@@ -44,24 +42,24 @@ SET income_flag = CASE
 END;
 
 -- #############################################################
--- BUSINESS QUESTION 1: Default Rate by Credit Grade
--- Purpose: Understanding risk associated with credit grades (A–G)
+-- BUSINESS QUESTION 1: What is the default rate across different credit grades?
+-- Purpose: Understand how default risk varies by credit grade (A–G) to refine risk-based pricing and approval thresholds.
 SELECT grade,
   ROUND(AVG(CASE WHEN loan_status = 'Charged Off' THEN 1 ELSE 0 END) * 100, 2) AS default_rate
 FROM loans_clean
 GROUP BY grade
 ORDER BY grade;
 
--- BUSINESS QUESTION 2: Average Interest Rate by Credit Grade
--- Purpose: Validate risk-based pricing; higher grade should imply lower rate
+-- BUSINESS QUESTION 2: How does the average interest rate vary across credit grades?
+-- Purpose: Validate the relationship between borrower risk level and interest rate through grade-wise pricing.
 SELECT grade,
   ROUND(AVG(int_rate), 2) AS avg_int_rate
 FROM loans_clean
 GROUP BY grade
 ORDER BY avg_int_rate DESC;
 
--- BUSINESS QUESTION 3: Default Rate by Loan Purpose
--- Purpose: Spot high-risk purposes (e.g., small business, medical)
+-- BUSINESS QUESTION 3: Which loan purposes have the highest default rates?
+-- Purpose: Identify risky loan objectives (e.g., small business, medical) to help with better screening and loan product design.
 SELECT purpose,
   COUNT(*) AS total_loans,
   ROUND(AVG(CASE WHEN loan_status = 'Charged Off' THEN 1 ELSE 0 END) * 100, 2) AS default_rate
@@ -69,8 +67,8 @@ FROM loans_clean
 GROUP BY purpose
 ORDER BY default_rate DESC;
 
--- BUSINESS QUESTION 4: Default Rate by Income Group
--- Purpose: Identify how income levels impact default risk
+-- BUSINESS QUESTION 4: Does borrower income level affect default likelihood?
+-- Purpose: Segment borrowers by income to assess financial stability and adjust eligibility or pricing policies.
 SELECT 
   CASE 
     WHEN annual_inc = 0 THEN 'Zero Income'
@@ -85,8 +83,8 @@ FROM loans_clean
 GROUP BY income_group
 ORDER BY default_rate DESC;
 
--- BUSINESS QUESTION 5: Default Rate by Loan Term
--- Purpose: Determine whether longer repayment periods carry more risk
+-- BUSINESS QUESTION 5: Is there a correlation between loan term and default rate?
+-- Purpose: Evaluate whether longer repayment periods contribute to increased credit risk.
 SELECT 
   term_clean AS term_months,
   COUNT(*) AS total_loans,
@@ -95,8 +93,8 @@ FROM loans_clean
 GROUP BY term_clean
 ORDER BY term_clean;
 
--- BUSINESS QUESTION 6: Default Rate by Interest Rate Band
--- Purpose: Check if higher interest rates correlate with increased default risk
+-- BUSINESS QUESTION 6: Does higher interest imply higher default risk?
+-- Purpose: Analyze interest rate bands to confirm whether higher interest correlates with increased defaults.
 SELECT 
   CASE 
     WHEN int_rate < 10 THEN 'Low Interest'
@@ -109,8 +107,8 @@ FROM loans_clean
 GROUP BY interest_band
 ORDER BY interest_band;
 
--- BUSINESS QUESTION 7: Employment Length and Default Risk
--- Purpose: Measure impact of work stability on repayment
+-- BUSINESS QUESTION 7: Does length of employment influence default probability?
+-- Purpose: Investigate borrower stability and repayment reliability based on job experience.
 SELECT emp_length,
   COUNT(*) AS total_borrowers,
   ROUND(AVG(CASE WHEN loan_status = 'Charged Off' THEN 1 ELSE 0 END)* 100,2) AS default_rate
@@ -119,8 +117,8 @@ WHERE emp_length IS NOT NULL
 GROUP BY emp_length
 ORDER BY CAST(emp_length AS REAL);
 
--- BUSINESS QUESTION 8: Home Ownership and Default Behavior
--- Purpose: Do homeowners default less often?
+-- BUSINESS QUESTION 8: Does home ownership status affect default rate?
+-- Purpose: Evaluate if borrowers with home ownership are more creditworthy.
 SELECT home_ownership,
   COUNT(*) AS borrowers,
   ROUND(AVG(CASE WHEN loan_status = 'Charged Off' THEN 1 ELSE 0 END)* 100,2) AS default_rate
@@ -128,8 +126,8 @@ FROM loans_clean
 GROUP BY home_ownership
 ORDER BY default_rate DESC;
 
--- BUSINESS QUESTION 9: Loan Size Categories and Risk
--- Purpose: Understand risk across different loan sizes
+-- BUSINESS QUESTION 9: How does loan size impact default risk?
+-- Purpose: Analyze whether smaller or larger loan amounts lead to higher delinquency.
 SELECT 
   CASE 
     WHEN loan_amnt <= 5000 THEN 'Small'
@@ -141,8 +139,8 @@ SELECT
 FROM loans_clean
 GROUP BY loan_size;
 
--- BUSINESS QUESTION 10: Loan Issuance and Default Trends by Month
--- Purpose: Discover seasonal trends or economic shocks (e.g., COVID-19)
+-- BUSINESS QUESTION 10: Are there monthly or seasonal trends in loan issuance and defaults?
+-- Purpose: Identify patterns related to macroeconomic factors, lending cycles, or seasonal behavior.
 SELECT 
   SUBSTR(issue_d, 1, 3) || '-20' || SUBSTR(issue_d, -2) AS issue_month,
   COUNT(*) AS loans_issued,
@@ -152,8 +150,8 @@ WHERE issue_d IS NOT NULL
 GROUP BY issue_month
 ORDER BY issue_month;
 
--- BUSINESS QUESTION 11: State-wise Loan Default Rate
--- Purpose: Identify geographic concentration of risk
+-- BUSINESS QUESTION 11: Which states have the highest loan default rates?
+-- Purpose: Identify geographic regions that may need more stringent credit policies.
 SELECT addr_state,
   COUNT(*) AS total_loans,
   ROUND(AVG(CASE WHEN loan_status = 'Charged Off' THEN 1 ELSE 0 END)* 100,2) AS default_rate
@@ -161,8 +159,8 @@ FROM loans_clean
 GROUP BY addr_state
 ORDER BY default_rate DESC;
 
--- BUSINESS QUESTION 12: Revolving Utilization Band vs Default
--- Purpose: Financial stress indicator
+-- BUSINESS QUESTION 12: Does revolving credit utilization indicate financial stress?
+-- Purpose: Use utilization rates as a proxy for borrower liquidity pressure.
 SELECT 
   CASE 
     WHEN revol_util < 30 THEN 'Low Utilization'
@@ -176,8 +174,8 @@ WHERE revol_util IS NOT NULL
 GROUP BY utilization_band
 ORDER BY default_rate DESC;
 
--- BUSINESS QUESTION 13: Credit History Age vs Default
--- Purpose: Assess default probability based on borrower credit age
+-- BUSINESS QUESTION 13: How does age of credit history affect default rates?
+-- Purpose: Determine if longer credit history reduces borrower risk.
 SELECT 
   (CAST(SUBSTR(issue_d, -2) AS INTEGER) + 2000) - 
   (CASE WHEN CAST(SUBSTR(earliest_cr_line, -2) AS INTEGER) > 30 THEN CAST('19' || SUBSTR(earliest_cr_line, -2) AS INTEGER)
@@ -190,15 +188,15 @@ WHERE issue_d IS NOT NULL AND earliest_cr_line IS NOT NULL
 GROUP BY credit_age_years
 ORDER BY credit_age_years DESC;
 
--- BUSINESS QUESTION 14: Top 10 High Exposure Loans
--- Purpose: Identify individual high-risk exposures
+-- BUSINESS QUESTION 14: Who are the top 10 borrowers by loan amount?
+-- Purpose: Pinpoint large individual exposures to assess high-value loan risks.
 SELECT id, loan_amnt, annual_inc,
   RANK() OVER (ORDER BY loan_amnt DESC) AS loan_rank
 FROM loans_clean
 LIMIT 10;
 
--- BUSINESS QUESTION 15: DTI Band vs Default Rate
--- Purpose: Compare over-leveraged borrowers vs default tendency
+-- BUSINESS QUESTION 15: Does DTI level correlate with loan default?
+-- Purpose: Analyze whether borrowers with high debt-to-income ratios are more likely to default.
 SELECT 
   CASE 
     WHEN dti < 10 THEN 'Low DTI'
@@ -211,8 +209,8 @@ FROM loans_clean
 GROUP BY dti_band
 ORDER BY dti_band;
 
--- BUSINESS QUESTION 16: Application Type and Default Rate
--- Purpose: Assess behavior of joint applications
+-- BUSINESS QUESTION 16: How does application type (individual vs joint) affect default rate?
+-- Purpose: Compare behavior of solo applicants versus joint applications to improve underwriting decisions.
 SELECT application_type,
   COUNT(*) AS total_loans,
   ROUND(AVG(CASE WHEN loan_status = 'Charged Off' THEN 1 ELSE 0 END)*100, 2) AS default_rate
