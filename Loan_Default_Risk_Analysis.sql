@@ -113,7 +113,6 @@ SELECT emp_length,
   COUNT(*) AS total_borrowers,
   ROUND(AVG(CASE WHEN loan_status = 'Charged Off' THEN 1 ELSE 0 END)* 100,2) AS default_rate
 FROM loans_clean
-WHERE emp_length IS NOT NULL
 GROUP BY emp_length
 ORDER BY CAST(emp_length AS REAL);
 
@@ -146,7 +145,6 @@ SELECT
   COUNT(*) AS loans_issued,
   ROUND(AVG(CASE WHEN loan_status = 'Charged Off' THEN 1 ELSE 0 END)* 100,2) AS default_rate
 FROM loans_clean
-WHERE issue_d IS NOT NULL
 GROUP BY issue_month
 ORDER BY issue_month;
 
@@ -170,7 +168,6 @@ SELECT
   COUNT(*) AS borrowers,
   ROUND(AVG(CASE WHEN loan_status = 'Charged Off' THEN 1 ELSE 0 END)*100, 2) AS default_rate
 FROM loans_clean
-WHERE revol_util IS NOT NULL
 GROUP BY utilization_band
 ORDER BY default_rate DESC;
 
@@ -184,9 +181,35 @@ SELECT
   COUNT(*) AS borrowers,
   ROUND(AVG(CASE WHEN loan_status = 'Charged Off' THEN 1 ELSE 0 END)*100, 2) AS default_rate
 FROM loans_clean
-WHERE issue_d IS NOT NULL AND earliest_cr_line IS NOT NULL
 GROUP BY credit_age_years
 ORDER BY credit_age_years DESC;
+
+-- GROUPING CREDIT AGE INTO DETAILED BUCKETS TO ANALYZE DEFAULT RATE TRENDS
+SELECT 
+  CASE 
+    WHEN credit_age_years < 10 THEN '<10 years'
+    WHEN credit_age_years BETWEEN 10 AND 19 THEN '10–20 years'
+    WHEN credit_age_years BETWEEN 20 AND 29 THEN '20–30 years'
+    WHEN credit_age_years BETWEEN 30 AND 39 THEN '30–40 years'
+    WHEN credit_age_years BETWEEN 40 AND 49 THEN '40–50 years'
+    ELSE '>50 years'
+  END AS credit_age_group,
+  COUNT(*) AS borrowers,
+  ROUND(AVG(CASE WHEN loan_status = 'Charged Off' THEN 1 ELSE 0 END) * 100, 2) AS default_rate
+FROM (
+  SELECT 
+    (CAST(SUBSTR(issue_d, -2) AS INTEGER) + 2000) - 
+    (CASE 
+       WHEN CAST(SUBSTR(earliest_cr_line, -2) AS INTEGER) > 30 
+         THEN CAST('19' || SUBSTR(earliest_cr_line, -2) AS INTEGER)
+       ELSE CAST('20' || SUBSTR(earliest_cr_line, -2) AS INTEGER)
+     END) AS credit_age_years,
+    loan_status
+  FROM loans_clean
+  WHERE issue_d IS NOT NULL AND earliest_cr_line IS NOT NULL
+) AS derived
+GROUP BY credit_age_group
+ORDER BY credit_age_group;
 
 -- BUSINESS QUESTION 14: Who are the top 10 borrowers by loan amount?
 -- Purpose: Pinpoint large individual exposures to assess high-value loan risks.
