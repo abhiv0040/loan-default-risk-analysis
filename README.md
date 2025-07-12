@@ -109,7 +109,7 @@ The objective is to derive practical takeaways on **which borrower attributes ar
 
 ## 🖼️ Visual Presentation  
 For a visual summary with charts and insight-driven storytelling, view the presentation:  
-📌 **[Loan Risk Presentation (PDF)](Insert-PDF-Link-Here)**
+📌 **PDF Attaced**
 
 ---
 
