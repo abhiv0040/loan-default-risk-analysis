@@ -6,17 +6,19 @@
 ---
 
 ## 🧠 Overview  
-This project performs a deep-dive analysis of consumer loan data from Lending Club to uncover patterns associated with **loan defaults**. Using SQL (via SQLite), we evaluate over 977,000 loan records to uncover borrower risk segments and actionable insights that can improve **loan underwriting**, **credit policy**, and **business strategy**.
+This project performs a deep-dive analysis of consumer loan data from Lending Club to uncover patterns associated with **loan defaults**. Using SQL (via SQLite), we evaluate over **1,000,000** loan records from **2007 to 2018** to identify borrower risk segments and generate actionable insights that can improve **loan underwriting**, **credit policy**, and **business strategy**.
+
 The objective is to derive practical takeaways on **which borrower attributes are high-risk**, how they correlate with **default behavior**, and what interventions lenders can apply to reduce credit losses.
 
 ---
 
 ## 📂 Project Files  
 
-| File Name                 | Description                                                   |
-|--------------------------|---------------------------------------------------------------|
-| `loan_default_risk_analysis.sql` | Full SQL script with data cleaning, transformations, and 16 analytical queries |
-| `README.md`              | Project overview and documentation (this file)                |
+| File Name                     | Description                                                                       |
+|------------------------------|-----------------------------------------------------------------------------------|
+| `loan_default_risk_analysis.sql` | Full SQL script with data cleaning, transformations, and 16 analytical queries    |
+| `Loan_Risk_Presentation.pdf`     | Creative presentation summarizing insights, visualizations, and recommendations  |
+| `README.md`                  | Project overview and documentation (this file)                                    |
 
 > 📌 **Data Source**:  
 > This project uses publicly available data from **[Kaggle – Lending Club Loan Data (2007–2018)](https://www.kaggle.com/datasets/wordsforthewise/lending-club)**
@@ -54,25 +56,25 @@ The objective is to derive practical takeaways on **which borrower attributes ar
 
 ## 📊 Key Findings  
 
-| Metric                      | Key Insight                                                 |
-|----------------------------|-------------------------------------------------------------|
-| Credit Grade               | Defaults increase from **3.27% (A)** to **38.1% (G)**        |
-| Interest Rate              | Risk-based pricing is confirmed; avg. rates rise with grade |
-| Loan Purpose               | **Small business** loans are riskiest (**17.95%**)           |
-| Income Group               | **Low-income** borrowers show 14.24% default rate           |
-| Term Length                | 60-month loans default more (**16.35%**) than 36-month ones |
-| Utilization Rate           | **High utilization** users default at 13.96%                |
-| Employment Length          | 1–2 years and <1 year show higher risk                      |
-| Home Ownership             | **Mortgage holders** are less likely to default             |
-| State Trends               | **AR, AL, SD** show highest state-level default rates       |
-| Credit History             | Shorter history (≤5 years) has higher default probability   |
-| Application Type           | **Joint apps** have far lower risk (**5.37%**)              |
+| Metric                | Key Insight                                                   |
+|-----------------------|---------------------------------------------------------------|
+| Credit Grade          | Defaults increase from **3.27% (A)** to **38.1% (G)**         |
+| Interest Rate         | Risk-based pricing is confirmed; avg. rates rise with grade   |
+| Loan Purpose          | **Small business** loans are riskiest (**17.95%**)            |
+| Income Group          | **Low-income** borrowers show 14.24% default rate             |
+| Term Length           | 60-month loans default more (**16.35%**) than 36-month loans  |
+| Utilization Rate      | **High utilization** users default at 13.96%                  |
+| Employment Length     | 1–2 years and <1 year show higher risk                        |
+| Home Ownership        | **Mortgage holders** are less likely to default               |
+| State Trends          | **AR, AL, SD** show highest state-level default rates         |
+| Credit History        | Shorter history (≤5 years) has higher default probability     |
+| Application Type      | **Joint apps** have far lower risk (**5.37%**)                |
 
 ---
 
 ## 🧠 Recommendations  
 
-- **Tighten Lending Standards** for grades E–G and small business purpose loans  
+- **Tighten Lending Standards** for grades E–G and small business loans  
 - Apply **loan size and term-based risk premiums**  
 - Target **low-utilization and high-income borrowers** to lower risk pool  
 - Consider **credit history age** and **employment length** as credit filters  
@@ -83,32 +85,40 @@ The objective is to derive practical takeaways on **which borrower attributes ar
 
 ## 🛠 Tools Used  
 
-| Tool        | Purpose                        |
-|-------------|--------------------------------|
-| SQLite      | SQL querying and transformation |
-| Excel       | Data pre-cleaning              |
-| DB Browser  | SQL development and execution  |
-| GitHub      | Project versioning and sharing |
+| Tool        | Purpose                            |
+|-------------|------------------------------------|
+| SQLite      | SQL querying and transformation     |
+| Excel       | Data pre-cleaning                   |
+| DB Browser  | SQL development and execution       |
+| GitHub      | Project versioning and sharing      |
+| Canva       | Presentation and storytelling       |
 
 ---
 
 ## 📈 Dataset Summary  
 
-| Feature                | Description                            |
-|------------------------|----------------------------------------|
-| Records Analyzed       | ~977,000                               |
-| Loan Amount Range      | $500 – $40,000+                        |
-| Interest Rate Range    | ~5% – 30%                              |
-| States Covered         | All 50 U.S. states                     |
-| Time Period            | 2015–2018 (Based on `issue_d`)         |
+| Feature              | Description                            |
+|----------------------|----------------------------------------|
+| Records Analyzed     | **1,000,000+**                          |
+| Loan Amount Range    | **$1,000 – $40,000**                   |
+| Interest Rate Range  | **~5% – 30%**                          |
+| States Covered       | **All 50 U.S. states**                 |
+| Time Period          | **2007–2018 (based on `issue_d`)**     |
+
+---
+
+## 🖼️ Visual Presentation  
+For a visual summary with charts and insight-driven storytelling, view the presentation:  
+📌 **[Loan Risk Presentation (PDF)](Insert-PDF-Link-Here)**
 
 ---
 
 ## 📬 Contact  
-**LinkedIn:** (https://linkedin.com/in/averma2025)  
-Feel free to connect for project feedback, collaboration, or opportunities in data analytics, finance, and risk.
+**Abhishek Verma**  
+📌 *MS in Business Analytics | DePaul University*  
+📧 Email: abhiv0040@gmail.com  
+🔗 LinkedIn: [linkedin.com/in/averma2025](https://linkedin.com/in/averma2025)
 
 ---
 
 > _“Data beats opinion. This analysis demonstrates how structured SQL can surface high-risk loan segments and optimize credit policy decisions.”_
-
