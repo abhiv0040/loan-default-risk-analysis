@@ -116,7 +116,7 @@ For a visual summary with charts and insight-driven storytelling, view the prese
 ## 📬 Contact  
 **Abhishek Verma**  
 📌 *MS in Business Analytics | DePaul University*  
-📧 Email: abhiv0040@gmail.com  
+📧 Email: averma17@depaul.edu  
 🔗 LinkedIn: [linkedin.com/in/averma2025](https://linkedin.com/in/averma2025)
 
 ---
